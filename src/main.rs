@@ -1,12 +1,8 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, window::WindowResolution};
 
-const CINNABAR_RED: (u8, u8, u8) = (227, 66, 52);
-const IMPERIAL_YELLOW: (u8, u8, u8) = (245, 199, 26);
-const DARK_BROWN: (u8, u8, u8) = (25, 13, 8);
-
-// fn draw_citcle_impl(x_center: f32, y_center: f32, radius: f32) {
-
-// }
+const CINNABAR_RED: (u8, u8, u8) = (140, 46, 37);
+const IMPERIAL_YELLOW: (u8, u8, u8) = (225, 182, 55);
+const DARK_GREY: (u8, u8, u8) = (10, 10, 10);
 
 fn color_rgb(u8_rgb: (u8, u8, u8)) -> Color {
     let r_f32 = (u8_rgb.0 as f32) / 255.0;
@@ -55,7 +51,7 @@ fn draw(
         50.0,
         IMPERIAL_YELLOW,
         30.0,
-        DARK_BROWN,
+        DARK_GREY,
         (-80.0, 0.0, 0.0),
     );
     draw_coin(
@@ -65,14 +61,28 @@ fn draw(
         50.0,
         CINNABAR_RED,
         30.0,
-        DARK_BROWN,
+        DARK_GREY,
         (80.0, 0.0, 0.0),
     );
 }
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "bevy_gobang".to_string(),
+                resolution: WindowResolution::new(500, 500),
+                resize_constraints: WindowResizeConstraints {
+                    min_width: 300.0,
+                    min_height: 300.0,
+                    max_width: 3000.0,
+                    max_height: 3000.0,
+                },
+                ..default()
+            }),
+            ..default()
+        }))
+        .insert_resource(ClearColor(color_rgb(DARK_GREY)))
         .add_systems(Startup, draw)
         .run();
 }
