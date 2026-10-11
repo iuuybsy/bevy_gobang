@@ -1,12 +1,14 @@
 mod consts;
 mod game_plot;
+mod resources;
 mod utils;
 
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use consts::*;
-use game_plot::systems::{draw, mouse_movement, setup};
+use game_plot::systems::{draw, mouse_click, mouse_movement, setup};
+use resources::*;
 
 fn main() {
     App::new()
@@ -25,7 +27,9 @@ fn main() {
             ..default()
         }))
         .insert_resource(ClearColor(utils::color_rgb(DARK_GREY)))
+        .insert_resource(ClickNum::default())
+        .insert_resource(HoverCell::default())
         .add_systems(Startup, setup)
-        .add_systems(Update, (draw, mouse_movement).chain())
+        .add_systems(Update, (draw, mouse_movement, mouse_click).chain())
         .run();
 }
