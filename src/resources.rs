@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Resource, Default)]
-pub struct ClickNum {
+pub struct GameState {
     pub num: u32,
 }
 

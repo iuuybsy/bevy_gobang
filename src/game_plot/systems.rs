@@ -128,7 +128,7 @@ pub fn mouse_movement(
     mut mouse_motion: MessageReader<CursorMoved>,
     window_query: Query<&Window, With<PrimaryWindow>>,
     existing_pieces: Query<Entity, With<MouthFloatPieceStrct>>,
-    click_num: Res<ClickNum>,
+    click_num: Res<GameState>,
     mut hover: ResMut<HoverCell>,
 ) {
     let Ok(game_window) = window_query.single() else {
@@ -180,7 +180,7 @@ pub fn mouse_movement(
 pub fn mouse_click(
     mouse: Res<ButtonInput<MouseButton>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut click_num: ResMut<ClickNum>,
+    mut click_num: ResMut<GameState>,
 ) {
     if !mouse.just_released(MouseButton::Left) {
         return;
