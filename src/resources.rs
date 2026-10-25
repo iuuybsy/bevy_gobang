@@ -4,6 +4,7 @@ use std::collections::HashSet;
 #[derive(Resource, Default)]
 pub struct GameState {
     num: u32,
+    move_stack: Vec<(u32, u32)>,
     pub red_set: HashSet<(u32, u32)>,
     pub yellow_set: HashSet<(u32, u32)>,
 }
@@ -18,12 +19,22 @@ impl GameState {
             return;
         }
 
+        self.move_stack.push(new_move_cord.clone());
         if self.is_red_turn() {
             self.red_set.insert(new_move_cord);
         } else {
             self.yellow_set.insert(new_move_cord);
         }
         self.num += 1;
+    }
+
+    pub fn regret(&mut self) {
+        if self.num > 0 {
+            self.num -= 1;
+            let regreted_move = self.move_stack.pop().unwrap();
+            self.red_set.remove(&regreted_move);
+            self.yellow_set.remove(&regreted_move);
+        }
     }
 }
 

@@ -171,22 +171,22 @@ pub fn mouse_click(
     mut game_state: ResMut<GameState>,
     plot_info: Res<PlotInfo>,
 ) {
-    if !mouse.just_released(MouseButton::Left) {
-        return;
+    if mouse.just_released(MouseButton::Left) {
+        let Ok(game_window) = window_query.single() else {
+            return;
+        };
+        let Some(cursor) = game_window.cursor_position() else {
+            return;
+        };
+
+        let Some((num_x, num_y)) = cursor_to_board(cursor, &plot_info) else {
+            return;
+        };
+
+        let num_x = (num_x + plot_info.center) as u32;
+        let num_y = (num_y + plot_info.center) as u32;
+        game_state.take_a_move((num_x, num_y));
+    } else if mouse.just_released(MouseButton::Right) {
+        game_state.regret();
     }
-
-    let Ok(game_window) = window_query.single() else {
-        return;
-    };
-    let Some(cursor) = game_window.cursor_position() else {
-        return;
-    };
-
-    let Some((num_x, num_y)) = cursor_to_board(cursor, &plot_info) else {
-        return;
-    };
-
-    let num_x = (num_x + plot_info.center) as u32;
-    let num_y = (num_y + plot_info.center) as u32;
-    game_state.take_a_move((num_x, num_y));
 }
