@@ -7,7 +7,9 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use consts::*;
-use game_plot::systems::{draw_board, draw_piece, mouse_click, mouse_movement, setup};
+use game_plot::systems::{
+    draw_board, draw_piece, mouse_click, mouse_movement, setup, update_plot_info,
+};
 use resources::*;
 
 fn main() {
@@ -28,11 +30,18 @@ fn main() {
         }))
         .insert_resource(ClearColor(utils::color_rgb(DARK_GREY, false)))
         .insert_resource(GameState::default())
-        .insert_resource(HoverCell::default())
+        .insert_resource(PlotInfo::default())
         .add_systems(Startup, setup)
         .add_systems(
             Update,
-            (draw_board, draw_piece, mouse_movement, mouse_click).chain(),
+            (
+                update_plot_info,
+                draw_board,
+                draw_piece,
+                mouse_movement,
+                mouse_click,
+            )
+                .chain(),
         )
         .run();
 }

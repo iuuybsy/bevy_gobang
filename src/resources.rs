@@ -32,4 +32,8 @@ impl GameState {
 }
 
 #[derive(Resource, Default)]
-pub struct HoverCell(pub Option<(f32, f32)>);
+pub struct PlotInfo {
+    pub outter_radius: f32,
+    pub center: f32,
+    pub window_size: Vec2,
+}
