@@ -25,10 +25,6 @@ impl GameState {
         }
         self.num += 1;
     }
-
-    pub fn get_num(&self) -> u32 {
-        self.num.clone()
-    }
 }
 
 #[derive(Resource, Default)]

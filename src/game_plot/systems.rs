@@ -251,8 +251,4 @@ pub fn mouse_click(
     let num_x = (num_x + plot_info.center) as u32;
     let num_y = (num_y + plot_info.center) as u32;
     game_state.take_a_move((num_x, num_y));
-
-    for entity in &existing_float {
-        commands.entity(entity).try_despawn();
-    }
 }
