@@ -8,7 +8,7 @@ use bevy::window::WindowResolution;
 
 use consts::*;
 use game_plot::systems::{
-    draw_board, draw_piece, mouse_click, mouse_movement, setup, update_plot_info,
+    draw_board, draw_pieces, mouse_click, mouse_movement, setup, update_plot_info,
 };
 use resources::*;
 
@@ -37,7 +37,7 @@ fn main() {
             (
                 update_plot_info,
                 draw_board,
-                draw_piece,
+                draw_pieces,
                 mouse_movement,
                 mouse_click,
             )
