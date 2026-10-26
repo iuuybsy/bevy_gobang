@@ -1,4 +1,5 @@
 mod consts;
+mod game_logic;
 mod game_plot;
 mod resources;
 mod utils;
@@ -7,9 +8,8 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use consts::*;
-use game_plot::systems::{
-    draw_board, draw_pieces, mouse_click, mouse_movement, setup, update_plot_info,
-};
+use game_logic::systems::{check_game_status, mouse_click};
+use game_plot::systems::{draw_board, draw_pieces, mouse_movement, setup, update_plot_info};
 use resources::*;
 
 fn main() {
@@ -40,6 +40,7 @@ fn main() {
                 draw_pieces,
                 mouse_movement,
                 mouse_click,
+                check_game_status,
             )
                 .chain(),
         )

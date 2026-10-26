@@ -6,6 +6,7 @@ use super::plot_utils::*;
 
 use crate::consts::*;
 use crate::resources::*;
+use crate::utils::*;
 
 pub fn setup(mut commands: Commands) {
     commands.spawn(Camera2d);
@@ -78,7 +79,7 @@ pub fn draw_pieces(
             &mut materials,
             plot_info.outter_radius,
             CINNABAR_RED,
-            false,
+            game_state.is_game_finish,
             LEN_RADIUS_RATIO * plot_info.outter_radius,
             DARK_GREY,
             (
@@ -97,7 +98,7 @@ pub fn draw_pieces(
             &mut materials,
             plot_info.outter_radius,
             IMPERIAL_YELLOW,
-            false,
+            game_state.is_game_finish,
             LEN_RADIUS_RATIO * plot_info.outter_radius,
             DARK_GREY,
             (
@@ -108,6 +109,32 @@ pub fn draw_pieces(
             SetPieceStrct,
         );
     });
+
+    if game_state.is_game_finish {
+        let win_color = if game_state.is_red_turn() {
+            IMPERIAL_YELLOW
+        } else {
+            CINNABAR_RED
+        };
+        game_state.last_five_set.iter().for_each(|cord| {
+            draw_single_piece(
+                &mut commands,
+                &mut meshes,
+                &mut materials,
+                plot_info.outter_radius,
+                win_color,
+                false,
+                LEN_RADIUS_RATIO * plot_info.outter_radius,
+                DARK_GREY,
+                (
+                    (cord.0 as f32 - plot_info.center) * plot_info.outter_radius * 2.0,
+                    (cord.1 as f32 - plot_info.center) * plot_info.outter_radius * 2.0,
+                    3.0,
+                ),
+                SetPieceStrct,
+            );
+        });
+    }
 }
 
 pub fn mouse_movement(
@@ -119,6 +146,10 @@ pub fn mouse_movement(
     game_state: Res<GameState>,
     plot_info: Res<PlotInfo>,
 ) {
+    if game_state.is_game_finish {
+        return;
+    }
+
     let Some(motion) = mouse_motion.read().last() else {
         return;
     };
@@ -134,8 +165,8 @@ pub fn mouse_movement(
     };
 
     let cord = (
-        (num_x + plot_info.center) as u32,
-        (num_y + plot_info.center) as u32,
+        (num_x + plot_info.center) as u8,
+        (num_y + plot_info.center) as u8,
     );
     if game_state.red_set.contains(&cord) || game_state.yellow_set.contains(&cord) {
         return;
@@ -163,30 +194,4 @@ pub fn mouse_movement(
         ),
         MouthFloatPieceStrct,
     );
-}
-
-pub fn mouse_click(
-    mouse: Res<ButtonInput<MouseButton>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
-    mut game_state: ResMut<GameState>,
-    plot_info: Res<PlotInfo>,
-) {
-    if mouse.just_released(MouseButton::Left) {
-        let Ok(game_window) = window_query.single() else {
-            return;
-        };
-        let Some(cursor) = game_window.cursor_position() else {
-            return;
-        };
-
-        let Some((num_x, num_y)) = cursor_to_board(cursor, &plot_info) else {
-            return;
-        };
-
-        let num_x = (num_x + plot_info.center) as u32;
-        let num_y = (num_y + plot_info.center) as u32;
-        game_state.take_a_move((num_x, num_y));
-    } else if mouse.just_released(MouseButton::Right) {
-        game_state.regret();
-    }
 }
