@@ -1,9 +1,50 @@
-use bevy::prelude::*;
+mod consts;
+mod game_logic;
+mod game_plot;
+mod resources;
+mod utils;
 
-fn hello_world() {
-    println!("Hello World!");
-}
+use bevy::prelude::*;
+use bevy::window::WindowResolution;
+
+use consts::*;
+use game_logic::systems::{auto_restart, check_game_status, mouse_click};
+use game_plot::systems::{draw_board, draw_pieces, mouse_movement, setup, update_plot_info};
+use resources::*;
 
 fn main() {
-    App::new().add_systems(Startup, hello_world).run();
+    App::new()
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "bevy_gobang".to_string(),
+                resolution: WindowResolution::new(INIT_WIDTH, INIT_HEIGHT),
+                resize_constraints: WindowResizeConstraints {
+                    min_width: MIN_WIDTH,
+                    min_height: MIN_HEIGHT,
+                    max_width: MAX_WIDTH,
+                    max_height: MAX_HEIGHT,
+                },
+                ..default()
+            }),
+            ..default()
+        }))
+        .insert_resource(ClearColor(utils::color_rgb(DARK_GREY, false)))
+        .insert_resource(GameState::default())
+        .insert_resource(PlotInfo::default())
+        .insert_resource(RestartTimer::default())
+        .add_systems(Startup, setup)
+        .add_systems(
+            Update,
+            (
+                update_plot_info,
+                draw_board,
+                draw_pieces,
+                mouse_movement,
+                mouse_click,
+                check_game_status,
+                auto_restart,
+            )
+                .chain(),
+        )
+        .run();
 }
