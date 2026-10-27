@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use std::collections::HashSet;
 
+use crate::consts::*;
+
 #[derive(Resource, Default)]
 pub struct GameState {
     num: u32,
@@ -54,6 +56,16 @@ impl GameState {
             Some(last_move)
         }
     }
+
+    pub fn reset(&mut self) {
+        self.num = 0;
+        self.move_stack.clear();
+        self.last_move_is_regret = false;
+        self.red_set.clear();
+        self.yellow_set.clear();
+        self.last_five_set.clear();
+        self.is_game_finish = false;
+    }
 }
 
 #[derive(Resource, Default)]
@@ -61,4 +73,17 @@ pub struct PlotInfo {
     pub outter_radius: f32,
     pub center: f32,
     pub window_size: Vec2,
+}
+
+#[derive(Resource)]
+pub struct RestartTimer {
+    pub timer: Timer,
+}
+
+impl Default for RestartTimer {
+    fn default() -> Self {
+        Self {
+            timer: Timer::from_seconds(AUTO_RESTART_SECONDS, TimerMode::Once),
+        }
+    }
 }

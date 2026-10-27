@@ -16,3 +16,5 @@ pub const MIN_HEIGHT: f32 = 300.0;
 pub const MAX_HEIGHT: f32 = 3000.0;
 
 pub const BOARD_LOGICAL_LEN: u8 = 15;
+
+pub const AUTO_RESTART_SECONDS: f32 = 1.0;

@@ -37,6 +37,22 @@ pub fn mouse_click(
     }
 }
 
+pub fn auto_restart(
+    time: Res<Time>,
+    mut game_state: ResMut<GameState>,
+    mut restart_timer: ResMut<RestartTimer>,
+) {
+    if !game_state.is_game_finish {
+        return;
+    }
+
+    restart_timer.timer.tick(time.delta());
+    if restart_timer.timer.is_finished() {
+        game_state.reset();
+        restart_timer.timer.reset();
+    }
+}
+
 pub fn check_game_status(mut game_state: ResMut<GameState>) {
     game_state.last_five_set.clear();
     if game_state.get_num() < 9 {

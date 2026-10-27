@@ -8,7 +8,7 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use consts::*;
-use game_logic::systems::{check_game_status, mouse_click};
+use game_logic::systems::{auto_restart, check_game_status, mouse_click};
 use game_plot::systems::{draw_board, draw_pieces, mouse_movement, setup, update_plot_info};
 use resources::*;
 
@@ -31,6 +31,7 @@ fn main() {
         .insert_resource(ClearColor(utils::color_rgb(DARK_GREY, false)))
         .insert_resource(GameState::default())
         .insert_resource(PlotInfo::default())
+        .insert_resource(RestartTimer::default())
         .add_systems(Startup, setup)
         .add_systems(
             Update,
@@ -41,6 +42,7 @@ fn main() {
                 mouse_movement,
                 mouse_click,
                 check_game_status,
+                auto_restart,
             )
                 .chain(),
         )
